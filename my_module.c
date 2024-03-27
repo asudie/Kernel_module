@@ -11,11 +11,11 @@ MODULE_LICENSE("GPL");
 
 // Custom init and exit methods
 static int __init custom_init(void) {
- printk(KERN_INFO "Hello KernelCare!");
+ printk(KERN_DEBUG "Hello KernelCare!");
  return 0;
 }
 static void __exit custom_exit(void) {
- printk(KERN_INFO "Hello KernelCare is unloaded");
+ printk(KERN_DEBUG "Hello KernelCare is unloaded");
 }
 module_init(custom_init);
 module_exit(custom_exit);
