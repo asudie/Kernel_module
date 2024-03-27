@@ -15,3 +15,4 @@
 ### 5. To see output in logs
 > sudo dmesg --follow
 
+![Снимок экрана от 2024-03-27 11-45-35](https://github.com/asudie/Kernel_module/assets/80539245/3e97470a-3262-468d-9fef-50224a9a2af7)
