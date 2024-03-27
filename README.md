@@ -4,7 +4,14 @@
 > make
 
 ### 2. To load do
-> insmod /lib/modules/4.4.0-21-generic/kernel/drivers/cpufreq/speedstep-lib.ko 
+> sudo insmod my_module.ko
 
 ### 3. To unload do
-> rmmod /lib/modules/4.4.0-21-generic/kernel/drivers/cpufreq/speedstep-lib.ko 
+> sudo rmmod my_module.ko
+
+### 4. To see my_module among modules
+> sudo lsmod
+
+### 5. To see output in logs
+> sudo dmesg --follow
+
