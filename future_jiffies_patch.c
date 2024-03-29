@@ -16,10 +16,6 @@ static struct dentry *dir = 0;
 // File `/sys/kernel/debug/example1/hello` points to this variable.
 static u32 jiffies = 0;
 
-// Creating directory
-
-// struct dentry *debugfs_create_dir(const char *name, struct dentry *parent);
-
 // Custom init and exit methods
 static int __init custom_init(void) {
 	struct dentry *file1;
