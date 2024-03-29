@@ -10,11 +10,34 @@ MODULE_AUTHOR("Aleksandra Smolniakova");
 MODULE_DESCRIPTION("Hello KernelCare driver");
 MODULE_LICENSE("GPL");
 
-// This directory entry will point to `/sys/kernel/debug/example1`.
+// This directory entry will point to `/sys/kernel/debug/kernelcare`.
 static struct dentry *dir = 0;
 
-// File `/sys/kernel/debug/example1/hello` points to this variable.
+// File `/sys/kernel/debug/kernelcare/jiffies` points to this variable.
 static u32 jiffies = 0;
+static u32 timer = 0;
+
+static int jiffies_read_op()
+{
+    timer = 5;
+	// TO DO: normal timer
+	return timer;
+}
+
+//
+// The macro has form
+//     DEFINE_SIMPLE_ATTRIBUTE(fops_name, read_op, write_op, printf_fmt)
+// and it defines `add_ops` to be
+//     struct file_operations add_ops = {
+//         .read = NULL,
+//         .write = add_write_op,
+//         .open = add_fops_open, // Also defined by macro
+//         // ...
+//     };
+//
+
+DEFINE_SIMPLE_ATTRIBUTE(jiffies_fops, jiffies_read_op, NULL, "%llu\n");
+
 
 // Custom init and exit methods
 static int __init custom_init(void) {
