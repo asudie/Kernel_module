@@ -4,11 +4,16 @@
 #include <linux/module.h>
 #include <linux/proc_fs.h>
 #include <linux/uaccess.h>
+#include <linux/jiffies.h>
+#include <linux/timer.h>
 
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
 MODULE_DESCRIPTION("Hello KernelCare driver");
 MODULE_LICENSE("GPL");
+
+// Variable for jiffies timers
+
 
 // This directory entry will point to `/sys/kernel/debug/kernelcare`.
 static struct dentry *dir = 0;
@@ -17,10 +22,10 @@ static struct dentry *dir = 0;
 static u32 jiffies = 0;
 static u32 timer = 0;
 
-static int jiffies_read_op() {
-  timer = 5;
-  // TO DO: normal timer
-  return timer;
+static unsigned long jiffies_read_op() {
+  unsigned long j = jiffies;
+  printk("\n[Jiffies Time : %lu]", j);
+  return j;
 }
 
 //
