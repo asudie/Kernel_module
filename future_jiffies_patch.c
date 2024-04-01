@@ -1,4 +1,5 @@
 #include <linux/debugfs.h>
+#include <linux/kernel.h>
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -12,6 +13,7 @@ MODULE_AUTHOR("Aleksandra Smolniakova");
 MODULE_DESCRIPTION("Hello KernelCare driver");
 MODULE_LICENSE("GPL");
 
+
 // Variable for jiffies timers
 
 
@@ -19,14 +21,9 @@ MODULE_LICENSE("GPL");
 static struct dentry *dir = 0;
 
 // File `/sys/kernel/debug/kernelcare/jiffies` points to this variable.
-static u32 jiffies = 0;
-static u32 timer = 0;
+// static u32 jiff = 0;
+// static u32 timer = 0;
 
-static unsigned long jiffies_read_op() {
-  unsigned long j = jiffies;
-  printk("\n[Jiffies Time : %lu]", j);
-  return j;
-}
 
 //
 // The macro has form
@@ -39,8 +36,20 @@ static unsigned long jiffies_read_op() {
 //         // ...
 //     };
 //
+static long int jiffies_read_op(struct file *, char *, long unsigned int,  long long int *) {
+  unsigned long j = jiffies;
+  printk("\n[Jiffies Time : %lu]", j);
+  return 0;
+}
 
-DEFINE_SIMPLE_ATTRIBUTE(jiffies_fops, jiffies_read_op, NULL, "%llu\n");
+struct file_operations fops = {
+       .read = jiffies_read_op,
+        .write = NULL,
+        .open = NULL
+    };
+
+// DEFINE_SIMPLE_ATTRIBUTE(jiffies_fops, jiffies_read_op, NULL, "%llu\n");
+
 
 // Custom init and exit methods
 static int __init custom_init(void) {
@@ -55,7 +64,7 @@ static int __init custom_init(void) {
     return -1;
   }
 
-  file1 = debugfs_create_u32("jiffies", 0004, dir, &jiffies);
+  file1 = debugfs_create_file("jiffies", 0004, dir, NULL, &fops);
 
   // TO DO: when read, should return the current value of the jiffies kernel
   // timer
@@ -74,13 +83,14 @@ static int __init custom_init(void) {
 
 static void __exit custom_exit(void) {
   printk(KERN_DEBUG "Hello KernelCare is unloaded");
-}
-
-void cleanup_module(void) {
-  // We must manually remove the debugfs entries we created. They are not
-  // automatically removed upon module removal.
   debugfs_remove_recursive(dir);
 }
 
 module_init(custom_init);
 module_exit(custom_exit);
+
+// void cleanup_module(void) {
+//   // We must manually remove the debugfs entries we created. They are not
+//   // automatically removed upon module removal.
+//   debugfs_remove_recursive(dir);
+// }
