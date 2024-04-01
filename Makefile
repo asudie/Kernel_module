@@ -1,4 +1,4 @@
-# obj-m += my_module.o
+# obj-m += my_module.o TO DO: normal goal for every task
 obj-m += future_jiffies_patch.o
 
 all:
