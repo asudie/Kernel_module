@@ -8,7 +8,7 @@
 #include <linux/jiffies.h>
 #include <linux/timer.h>
 #include <linux/slab.h>
-#include <stdio.h>
+// #include <stdio.h>
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
 MODULE_DESCRIPTION("Hello KernelCare driver data patch");
@@ -17,9 +17,9 @@ MODULE_LICENSE("GPL");
 // This directory entry will point to `/sys/kernel/debug/kernelcare`.
 static struct dentry *dir = 0;
 
-static u32 data = 0;
+// static u32 data = 0;
 
-static struct file *data_ptr;
+static struct file *data_ptr = NULL;
 
 static long int jiffies_read_op(struct file *, char *, long unsigned int,  long long int *) {
 	long j = jiffies;
@@ -33,9 +33,9 @@ static long int data_read_op(struct file *, char *, long unsigned int,  long lon
   return j;
 }
 
-static char *data_write_op(struct file *fptr, const char __user *data, size_t size, loff_t *mem)
+static long int data_write_op(struct file *fptr, const char __user *data, size_t size, loff_t *mem)
 {
-	struct FILE *my_ptr;
+	// struct FILE *my_ptr;
 
 	data_ptr = kmalloc(sizeof(struct file), GFP_KERNEL);
 	if (!fptr)
@@ -43,19 +43,19 @@ static char *data_write_op(struct file *fptr, const char __user *data, size_t si
         KERN_ALERT
         "Can't allocate memory!\n");
 
-	my_ptr = fopen("/sys/kernel/debug/kernelcare/data","w");
-	 if(my_ptr == NULL)
-	{
-	printk(
-        KERN_ALERT
-        "Can't open the file!\n");  
-	exit(1);             
-	}
+	// my_ptr = fopen("/sys/kernel/debug/kernelcare/data","w");
+	//  if(my_ptr == NULL)
+	// {
+	// printk(
+        // KERN_ALERT
+        // "Can't open the file!\n");  
+	// exit(1);             
+	// }
 
-	printf(data);
-	fclose(my_ptr);
+	// printf(data);
+	// fclose(my_ptr);
 
-   return data; // TO DO: return data
+   return 0; // TO DO: return data
 }
 
 
@@ -115,7 +115,8 @@ could be reading from the file while someone else is writing to it
 
 static void __exit custom_exit(void) {
   printk(KERN_DEBUG "Hello KernelCare is unloaded\n");
-  kfree(data_ptr);
+  if(data_ptr)
+  	kfree(data_ptr);
   debugfs_remove_recursive(dir);
   
 }
