@@ -19,6 +19,8 @@ static struct dentry *dir = 0;
 
 static u32 data = 0;
 
+static struct file *data_ptr;
+
 static long int jiffies_read_op(struct file *, char *, long unsigned int,  long long int *) {
 	long j = jiffies;
   printk("\n[Jiffies Time : %lu]", j);
@@ -31,29 +33,29 @@ static long int data_read_op(struct file *, char *, long unsigned int,  long lon
   return j;
 }
 
-static ssize_t data_write_op(struct file *fptr, const char __user *data, size_t size, loff_t *mem)
+static char *data_write_op(struct file *fptr, const char __user *data, size_t size, loff_t *mem)
 {
-	// struct FILE *ptr;
+	struct FILE *my_ptr;
 
-	fptr = kmalloc(sizeof(struct file), GFP_KERNEL);
+	data_ptr = kmalloc(sizeof(struct file), GFP_KERNEL);
 	if (!fptr)
 		printk(
         KERN_ALERT
         "Can't allocate memory!\n");
-// 	fptr = fopen("C:\\program.txt","w");
-// 	 if(fptr == NULL)
-//    {
-//       printf("Error!");   
-//       exit(1);             
-//    }
 
-//    printf("Enter num: ");
-//    scanf("%d",&num);
+	my_ptr = fopen("/sys/kernel/debug/kernelcare/data","w");
+	 if(my_ptr == NULL)
+	{
+	printk(
+        KERN_ALERT
+        "Can't open the file!\n");  
+	exit(1);             
+	}
 
-//    fprintf(fptr,"%d",num);
-//    fclose(fptr);
+	printf(data);
+	fclose(my_ptr);
 
-//    return 0;
+   return data; // TO DO: return data
 }
 
 
@@ -113,7 +115,9 @@ could be reading from the file while someone else is writing to it
 
 static void __exit custom_exit(void) {
   printk(KERN_DEBUG "Hello KernelCare is unloaded\n");
+  kfree(data_ptr);
   debugfs_remove_recursive(dir);
+  
 }
 
 module_init(custom_init);
