@@ -7,7 +7,8 @@
 #include <linux/uaccess.h>
 #include <linux/jiffies.h>
 #include <linux/timer.h>
-
+#include <linux/slab.h>
+#include <stdio.h>
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
 MODULE_DESCRIPTION("Hello KernelCare driver data patch");
@@ -23,6 +24,38 @@ static long int jiffies_read_op(struct file *, char *, long unsigned int,  long 
   printk("\n[Jiffies Time : %lu]", j);
   return j;
 }
+
+static long int data_read_op(struct file *, char *, long unsigned int,  long long int *) {
+	long j = jiffies;
+  printk("\n[Jiffies Time : %lu]", j); // TO DO
+  return j;
+}
+
+static ssize_t data_write_op(struct file *fptr, const char __user *data, size_t size, loff_t *mem)
+{
+	// struct FILE *ptr;
+
+	fptr = kmalloc(sizeof(struct file), GFP_KERNEL);
+	if (!fptr)
+		printk(
+        KERN_ALERT
+        "Can't allocate memory!\n");
+// 	fptr = fopen("C:\\program.txt","w");
+// 	 if(fptr == NULL)
+//    {
+//       printf("Error!");   
+//       exit(1);             
+//    }
+
+//    printf("Enter num: ");
+//    scanf("%d",&num);
+
+//    fprintf(fptr,"%d",num);
+//    fclose(fptr);
+
+//    return 0;
+}
+
 
 struct file_operations fops_j = {
        .read = jiffies_read_op,
@@ -74,12 +107,12 @@ could be reading from the file while someone else is writing to it
     return -1;
   }
 
-  printk(KERN_DEBUG "Hello KernelCare!");
+  printk(KERN_DEBUG "Hello KernelCare!\n");
   return 0;
 }
 
 static void __exit custom_exit(void) {
-  printk(KERN_DEBUG "Hello KernelCare is unloaded");
+  printk(KERN_DEBUG "Hello KernelCare is unloaded\n");
   debugfs_remove_recursive(dir);
 }
 
