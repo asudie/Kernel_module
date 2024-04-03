@@ -1,6 +1,7 @@
-# obj-m += my_module.o TO DO: normal goal for every task
+obj-m += my_module.o
+CFLAGS_my_module.o := -DDEBUG
 # obj-m += future_jiffies_patch.o
-obj-m += future_data_patch.o
+# obj-m += future_data_patch.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules

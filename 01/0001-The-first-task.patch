@@ -1,0 +1,48 @@
+From d9b5418abda46bf777fb81dae2911499fe818028 Mon Sep 17 00:00:00 2001
+From: asudie <smolnyakovaae@gmail.com>
+Date: Wed, 3 Apr 2024 19:36:04 +0300
+Subject: [PATCH] The first task
+
+---
+ kernel/module/my_module.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 kernel/module/my_module.c
+
+diff --git a/kernel/module/my_module.c b/kernel/module/my_module.c
+new file mode 100644
+index 000000000..9c8c41447
+--- /dev/null
++++ b/kernel/module/my_module.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright 2024 Aleksandra Smolniakova.
++ */
++
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/proc_fs.h>
++#include <linux/uaccess.h>
++
++// Module metadata
++MODULE_AUTHOR("Aleksandra Smolniakova");
++MODULE_DESCRIPTION("Hello KernelCare driver");
++MODULE_LICENSE("GPL");
++
++// Custom init and exit methods
++static int __init custom_init(void)
++{
++	pr_debug("Hello KernelCare!");
++	return 0;
++}
++
++static void __exit custom_exit(void)
++{
++	pr_debug("Hello KernelCare is unloaded");
++}
++module_init(custom_init);
++module_exit(custom_exit);
+-- 
+2.34.1
+
