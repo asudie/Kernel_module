@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright 2024 Aleksandra Smolniakova.
+ */
+
 #include <linux/debugfs.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
@@ -35,28 +40,25 @@ static int __init custom_init(void) {
   dir = debugfs_create_dir("kernelcare", 0);
   if (!dir) {
     // Abort module load.
-    printk(
-        KERN_ALERT
-        "debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare\n");
+    pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare\n");
     return -1;
   }
 
   file1 = debugfs_create_file("jiffies", 0004, dir, NULL, &fops);
 
-  if (!file1) {
+ if (!file1) {
     // Abort module load.
-    printk(KERN_ALERT
-           "debugfs_kernelcare: failed to create "
+    pr_alert("debugfs_kernelcare: failed to create "
            "/sys/kernel/debug/kernelcare/jiffies\n");
     return -1;
   }
 
-  printk(KERN_DEBUG "Hello KernelCare!");
+  pr_debug("Hello KernelCare!");
   return 0;
 }
 
 static void __exit custom_exit(void) {
-  printk(KERN_DEBUG "Hello KernelCare is unloaded");
+  pr_debug("Hello KernelCare is unloaded");
   debugfs_remove_recursive(dir);
 }
 
