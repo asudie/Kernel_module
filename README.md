@@ -1,4 +1,4 @@
-![data_working](https://github.com/asudie/Kernel_module/assets/80539245/eadd081c-c9de-4020-88e1-6b2c59c79df3)# Kernel_module
+# Kernel_module
 
 ## Task 1
 
@@ -21,19 +21,27 @@
 
 ## Task 2
 
-### How to enable debugfs :Permalink
+### How to enable debugfs
 
 *To enable it for onetime, i.e information will be available until next boot of system.*
 
 > mount -t debugfs none /sys/kernel/debug
 
-**To make the change permanent, add following line to /etc/fstab file.**
+### Checking files with checkpatch.pl
 
-![Снимок экрана от 2024-04-01 14-34-55](https://github.com/asudie/Kernel_module/assets/80539245/e65607ee-1a81-455d-adee-de287132604a)
+![style](https://github.com/asudie/Kernel_module/assets/80539245/4489d521-e6eb-4626-a375-2a25136eb4ad)
 
-> debugfs    /sys/kernel/debug      debugfs  defaults  0 0
+### Checking that jiffies work with printk
 
-![Uploading data_working.png![jiffies_works](https://github.com/asudie/Kernel_module/assets/80539245/f9334684-ac60-4ad4-aeac-c1fb1581691f)![style](https://github.com/asudie/Kernel_module/assets/80539245/4489d521-e6eb-4626-a375-2a25136eb4ad)
+![jiffies_works](https://github.com/asudie/Kernel_module/assets/80539245/f9334684-ac60-4ad4-aeac-c1fb1581691f)
+
+### Checking that data work with printk
+
+![data_working](https://github.com/asudie/Kernel_module/assets/80539245/eadd081c-c9de-4020-88e1-6b2c59c79df3)
+
+
+
+
 
 
 
