@@ -1,6 +1,10 @@
 # Kernel_module
 
+Source code is in src, patches are in 01 and 02
+
 ## Task 1
+
+> cd src
 
 ### 1. To compile do
 > make
