@@ -21,10 +21,13 @@ MODULE_LICENSE("GPL");
 // This directory entry will point to `/sys/kernel/debug/kernelcare`.
 static struct dentry *dir = 0;
 
-static long int jiffies_read_op(struct file *, char *, long unsigned int,  long long int *) {
+static long int jiffies_read_op(struct file *fp, char *buff, size_t count,
+								loff_t *off) {
 	long j = jiffies;
-  printk("\n[Jiffies Time : %lu]", j);
-  return j;
+	char my_str[BUFFER_SIZE + 1]; // +1 for null terminator
+	int len;
+	len = snprintf(my_str, BUFFER_SIZE + 1, "%ld", j);
+	return simple_read_from_buffer(buff, count, off, my_str, 11);
 }
 
 struct file_operations fops = {
