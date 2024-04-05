@@ -37,11 +37,11 @@ All tasks are completed on a real machine.
 
 ![style](https://github.com/asudie/Kernel_module/assets/80539245/4489d521-e6eb-4626-a375-2a25136eb4ad)
 
-### Checking that jiffies work with printk
+### Checking that jiffies works with printk
 
 ![jiffies_works](https://github.com/asudie/Kernel_module/assets/80539245/f9334684-ac60-4ad4-aeac-c1fb1581691f)
 
-### Checking that data work with printk
+### Checking that data works with printk
 
 ![data_working](https://github.com/asudie/Kernel_module/assets/80539245/eadd081c-c9de-4020-88e1-6b2c59c79df3)
 
