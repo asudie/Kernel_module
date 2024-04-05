@@ -1,4 +1,4 @@
-# Kernel_module
+![data_working](https://github.com/asudie/Kernel_module/assets/80539245/eadd081c-c9de-4020-88e1-6b2c59c79df3)# Kernel_module
 
 ## Task 1
 
@@ -33,13 +33,7 @@
 
 > debugfs    /sys/kernel/debug      debugfs  defaults  0 0
 
-**Compiling little test program**
+![Uploading data_working.png![jiffies_works](https://github.com/asudie/Kernel_module/assets/80539245/f9334684-ac60-4ad4-aeac-c1fb1581691f)![style](https://github.com/asudie/Kernel_module/assets/80539245/4489d521-e6eb-4626-a375-2a25136eb4ad)
 
-> gcc read_test.c -o read_test
 
-![Снимок экрана от 2024-04-01 14-34-55](https://github.com/asudie/Kernel_module/assets/80539245/fe7640be-86a0-4a81-a4d3-d5e0681e4e57)
-
-**Cheking the directories, files and permissions**
-
-![Снимок экрана от 2024-04-01 14-25-41](https://github.com/asudie/Kernel_module/assets/80539245/3784bff7-2d8c-4ae4-a770-4b2f8fa128e5)
 
