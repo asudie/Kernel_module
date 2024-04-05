@@ -16,7 +16,7 @@
 #include <linux/stat.h>
 #include <linux/uaccess.h>
 
-// #define PAGE_SIZE 4096
+#define BUFFER_SIZE 11
 
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
@@ -27,43 +27,36 @@ MODULE_LICENSE("GPL");
 // This directory entry will point to `/sys/kernel/debug/kernelcare`.
 static struct dentry *dir = 0;
 
-// static u32 data = 0;
-
-// static struct file *data_ptr = NULL;
 
 static struct mutex foo_mutex;
 static char foo_tmp[PAGE_SIZE];
 static int foo_size;
 
-// static short  messageSize;
-// static char   message[256] = {0};
+// static long int jiffies_read_op(struct file *fp, char *buff, size_t count,
+// 								loff_t *off) {
+// 	// printk("READ JIFF!\n");
+// 	// char *my_str = "My str\n";
+// 	// // snprintf(my_str, 11, "%ld\n", jiffies);
+// 	// // if (copy_to_user(buff, my_str, sizeof(my_str))) 
+// 	// // 	return -EFAULT;
+// 	// printk(my_str);
+// 	// return sizeof(my_str);
+// 	return 1;
+// }
 
-static long int jiffies_read_op(struct file *, char *, long unsigned int,  long long int *) {
+static long int jiffies_read_op(struct file *fp, char *buff, size_t count,
+								loff_t *off) {
 	long j = jiffies;
-  printk("\n[Jiffies Time : %lu]", j);
-  return j;
+	char my_str[BUFFER_SIZE + 1]; // +1 for null terminator
+	int len;
+	len = snprintf(my_str, BUFFER_SIZE + 1, "%ld", j);
+	return simple_read_from_buffer(buff, count, off, my_str, 11);
 }
-
-// static int data_release(struct inode *inode, struct file *file)
-// {
-//     mutex_unlock(&foo_mutex);
-//     return 0;
-// }
-
-// static int data_open(struct inode *inode, struct file *file)
-// {
-//     if (!mutex_trylock(&foo_mutex)) {
-//         printk(KERN_ALERT "data is in use, but will still go on.");
-//         // FIXME: If we want the mutex lock to work well, need to return -EBUSY
-//        return -EBUSY;
-//     }
-//     return 0;
-// }
 
 static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 								loff_t *off)
 {
-	printk("HERE!\n");
+	// printk("HERE!\n");
 	int ret;
 	// ret = mutex_lock(&foo_mutex);
 	// if (ret)
@@ -81,7 +74,7 @@ static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 		ret = -EFAULT;
 		goto cleanup;
 	}
-	printk("READ!\n");
+	// printk("READ!\n");
 	*off += count;
 	ret = count;
 
@@ -89,32 +82,6 @@ static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 		mutex_unlock(&foo_mutex);
 		return ret;
 }
-
-// static ssize_t data_read_op(struct file *filep, char *buffer, size_t len, loff_t *offset){
-//    int error_count = 0;
-// //    int i = 0;
-//    char babelMessage[256] = { 0 };
-
-//    //   Create the babel content.
-// //    for (; i<messageSize; i++) {
-// //        babelMessage[i] = babel(message[i]);
-// //    }
-
-//    // copy_to_user has the format ( * to, *from, size) and returns 0 on success
-//    error_count = copy_to_user(buffer, babelMessage, messageSize);
-
-//    if (error_count==0) {
-// //       pr_info("%s: sent %d characters to the user\n", MODULE_NAME, messageSize);
-//       //    Clear the position, return 0.
-//       messageSize = 0;
-//       return 0;
-//    }
-//    else {
-// //       pr_err("%s: failed to send %d characters to the user\n", MODULE_NAME, error_count);
-//       //    Failed -- return a bad address message (i.e. -14)
-//       return -EFAULT;              
-//    }
-// }
 
 static ssize_t data_write_op(struct file *fp, const char *buff, size_t count,
 								loff_t *off)
@@ -139,24 +106,6 @@ static ssize_t data_write_op(struct file *fp, const char *buff, size_t count,
 		mutex_unlock(&foo_mutex);
 		return ret;	
 }
-
-// static ssize_t data_write_op(struct file *filep, const char *buffer, size_t len, loff_t *offset){
-//     //  Write the string into our message memory. Record the length.
-//     long copied_from_user;
-//     copied_from_user = copy_from_user(message, buffer, len);
-//     messageSize = len;
-//     if(copied_from_user != 0 )
-//     {
-//         printk(KERN_WARNING "copy_from_user failed ret_val: %ld\n",copied_from_user );
-//     }
-//     else
-//     {
-//         // pr_info("%s: copy_from_user ret_val : %ld\n", MODULE_NAME, copied_from_user);
-//         // pr_info("%s: received %zu characters from the user\n", MODULE_NAME, len);
-//     }
-
-//     return len;
-// }
 
 struct file_operations fops_j = {
        .read = jiffies_read_op,
@@ -205,14 +154,11 @@ static int __init custom_init(void) {
   }
 
   pr_debug("Hello KernelCare!");
-//   mutex_init(&foo_mutex);
   return 0;
 }
 
 static void __exit custom_exit(void) {
   pr_debug("Hello KernelCare is unloaded");
-//   if(data_ptr)
-//   	kfree(data_ptr);
   debugfs_remove_recursive(dir);
   
 }
