@@ -1,6 +1,8 @@
 # Kernel_module
 
-Source code is in src, patches are in 01 and 02
+Source code is in src, patches are in 01 and 02.
+
+All tasks are completed on a real machine.
 
 ## Task 1
 
