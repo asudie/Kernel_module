@@ -1,7 +1,8 @@
-obj-m += my_module.o
+# obj-m += my_module.o
 # obj-m += future_jiffies_patch.o
 # obj-m += future_data_patch.o
-CFLAGS_my_module.o := -DDEBUG
+obj-m += list.o
+# CFLAGS_my_module.o := -DDEBUG
 # CFLAGS_future_data_patch.o := -DDEBUG
 # CFLAGS_future_jiffies_patch.o := -DDEBUG
 
