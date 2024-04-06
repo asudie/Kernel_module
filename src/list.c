@@ -29,11 +29,11 @@ static struct identity identity_list;
 int identity_create(char *name, int id)
 {
 	struct identity *new;
+
 	new = kmalloc(sizeof(*new), GFP_KERNEL);
 	if (!new)
 		return -ENOMEM;
-
-	strncpy(new->name, name, 20);
+	strscpy(new->name, name, 20);
 	new->id = id;
 	new->hired = false;
 	list_add_tail(&new->list, &identity_list.list);
@@ -77,7 +77,7 @@ int identity_hire(int id)
 	return res;
 }
 
-#define CHECK(STMT) do {if ((ret = STMT) < 0) goto cleanup; } while (0)
+#define CHECK(STMT)do {if ((ret = STMT) < 0) goto cleanup; } while (0) // change
 
 // Custom init and exit methods
 static int __init custom_init(void)
@@ -94,7 +94,7 @@ static int __init custom_init(void)
 	identity_hire(1);
 	temp = identity_find(10);
 	if (temp == NULL)
-	pr_debug("id 10 not found\n");
+		pr_debug("id 10 not found\n");
 	identity_destroy(2);
 	identity_destroy(1);
 	pr_debug("Hello KernelCare!");
