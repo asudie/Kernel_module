@@ -77,14 +77,17 @@ int identity_hire(int id)
 	return res;
 }
 
+#define CHECK(STMT) do {if ((ret = STMT) < 0) goto cleanup; } while (0)
+
 // Custom init and exit methods
 static int __init custom_init(void)
 {
-	pr_debug("Hello KernelCare!");
-
+	int ret;
 	struct identity *temp;
-	identity_create("YOUR_NAME", 1);
-	identity_create("YOUR_FRIEND_NAME", 2);
+
+	INIT_LIST_HEAD(&identity_list.list);
+	CHECK(identity_create("YOUR_NAME", 1));
+	CHECK(identity_create("YOUR_FRIEND_NAME", 2));
 	// ...
 	temp = identity_find(1);
 	pr_debug("id 1 = %s\n", temp->name);
@@ -94,11 +97,23 @@ static int __init custom_init(void)
 	pr_debug("id 10 not found\n");
 	identity_destroy(2);
 	identity_destroy(1);
+	pr_debug("Hello KernelCare!");
 	return 0;
+
+cleanup:
+	return ret;
 }
 
 static void __exit custom_exit(void)
 {
+	struct list_head *ptr, *next;
+	struct identity *entry;
+
+	list_for_each_safe(ptr, next, &identity_list.list) {
+		entry = list_entry(ptr, struct identity, list);
+		list_del(&entry->list);
+		kfree(entry);
+	}
 	pr_debug("Hello KernelCare is unloaded");
 }
 module_init(custom_init);
