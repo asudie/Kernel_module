@@ -46,7 +46,7 @@ static long jiffies_read_op(struct file *fp, char *buff, size_t count,
 static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 								loff_t *off)
 {
-	int ret;
+	ssize_t ret;
 
 	mutex_lock(&foo_mutex);
 	if (count > foo_size - *off)
@@ -72,7 +72,7 @@ cleanup:
 static ssize_t data_write_op(struct file *fp, const char *buff, size_t count,
 								loff_t *off)
 {
-	int ret;
+	ssize_t ret;
 
 	mutex_lock(&foo_mutex);
 	count = min(count, PAGE_SIZE);
@@ -115,20 +115,25 @@ static int __init custom_init(void)
 	if (!dir) {
 		// Abort module load.
 		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare\n");
+		mutex_destroy(&foo_mutex);
 	return -1;
-}
+	}
 
 	file1 = debugfs_create_file("jiffies", 0004, dir, NULL, &fops_j);
 
 	if (!file1) {
 		// Abort module load.
 		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare/jiffies\n");
+		debugfs_remove_recursive(dir);
+		mutex_destroy(&foo_mutex);
 		return -1;
 	}
 	file2 = debugfs_create_file("data", 0204, dir, NULL, &fops_d);
 	if (!file2) {
 		// Abort module load.
 		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare/data\n");
+		debugfs_remove_recursive(dir);
+		mutex_destroy(&foo_mutex);
 		return -1;
 	}
 
@@ -139,6 +144,8 @@ static int __init custom_init(void)
 static void __exit custom_exit(void)
 {
 	pr_debug("Hello KernelCare is unloaded");
+	while (mutex_is_locked(&foo_mutex))
+		continue;
 	debugfs_remove_recursive(dir);
 }
 

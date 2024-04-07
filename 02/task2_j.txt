@@ -1,5 +1,5 @@
---- my_module.c	2024-04-03 19:06:12.102769834 +0300
-+++ future_jiffies_patch.c	2024-04-05 18:50:11.811696175 +0300
+--- my_module.c	2024-04-07 19:17:33.014229368 +0300
++++ future_jiffies_patch.c	2024-04-07 19:17:33.014229368 +0300
 @@ -3,27 +3,73 @@
   * Copyright 2024 Aleksandra Smolniakova.
   */

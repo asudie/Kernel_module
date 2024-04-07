@@ -1,5 +1,5 @@
---- future_jiffies_patch.c	2024-04-05 18:50:11.811696175 +0300
-+++ future_data_patch.c	2024-04-05 19:12:51.559274879 +0300
+--- future_jiffies_patch.c	2024-04-07 19:17:33.014229368 +0300
++++ future_data_patch.c	2024-04-07 19:19:24.435206703 +0300
 @@ -2,7 +2,6 @@
  /*
   * Copyright 2024 Aleksandra Smolniakova.
@@ -8,7 +8,7 @@
  #include <linux/debugfs.h>
  #include <linux/kernel.h>
  #include <linux/fs.h>
-@@ -12,46 +11,112 @@
+@@ -12,45 +11,112 @@
  #include <linux/uaccess.h>
  #include <linux/jiffies.h>
  #include <linux/timer.h>
@@ -50,7 +50,7 @@
 +static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 +								loff_t *off)
 +{
-+	int ret;
++	ssize_t ret;
 +
 +	mutex_lock(&foo_mutex);
 +	if (count > foo_size - *off)
@@ -76,7 +76,7 @@
 +static ssize_t data_write_op(struct file *fp, const char *buff, size_t count,
 +								loff_t *off)
 +{
-+	int ret;
++	ssize_t ret;
 +
 +	mutex_lock(&foo_mutex);
 +	count = min(count, PAGE_SIZE);
@@ -120,25 +120,38 @@
  		// Abort module load.
  		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare\n");
 -		return -1;
--	}
++		mutex_destroy(&foo_mutex);
 +	return -1;
-+}
+ 	}
  
  	file1 = debugfs_create_file("jiffies", 0004, dir, NULL, &fops_j);
- 
-@@ -60,8 +125,14 @@
+@@ -58,16 +124,28 @@
+ 	if (!file1) {
+ 		// Abort module load.
  		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare/jiffies\n");
- 		return -1;
- 	}
++		debugfs_remove_recursive(dir);
++		mutex_destroy(&foo_mutex);
++		return -1;
++	}
 +	file2 = debugfs_create_file("data", 0204, dir, NULL, &fops_d);
 +	if (!file2) {
 +		// Abort module load.
 +		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare/data\n");
-+		return -1;
-+	}
++		debugfs_remove_recursive(dir);
++		mutex_destroy(&foo_mutex);
+ 		return -1;
+ 	}
  
 -	 pr_debug("Hello KernelCare!");
 +	pr_debug("Hello KernelCare!");
  	return 0;
+ }
+ 
+ static void __exit custom_exit(void)
+ {
+ 	pr_debug("Hello KernelCare is unloaded");
++	while (mutex_is_locked(&foo_mutex))
++		continue;
+ 	debugfs_remove_recursive(dir);
  }
  

@@ -88,7 +88,6 @@ static int __init custom_init(void)
 	INIT_LIST_HEAD(&identity_list.list);
 	CHECK(identity_create("YOUR_NAME", 1));
 	CHECK(identity_create("YOUR_FRIEND_NAME", 2));
-	// ...
 	temp = identity_find(1);
 	pr_debug("id 1 = %s\n", temp->name);
 	identity_hire(1);
