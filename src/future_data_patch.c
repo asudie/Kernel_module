@@ -29,6 +29,12 @@ static struct dentry *dir;
 
 
 static struct mutex foo_mutex;
+/*
+ * JFYI: Linux kernel has different types of locks,
+ * https://www.kernel.org/doc/Documentation/locking/locktypes.rst
+ * one or another is better in different situations,
+ * rwlock_t seems to be better here, but mutex is ok for this task
+ */
 static char foo_tmp[PAGE_SIZE];
 static int foo_size;
 
@@ -57,6 +63,10 @@ static ssize_t data_read_op(struct file *fp, char *buff, size_t count,
 		goto cleanup;
 	}
 
+	/*
+	 * this seems to be easier:
+	 * simple_read_from_buffer(buff, count, off, foo_tmp, PAGE_SIZE);
+	 */
 	if (copy_to_user(buff, foo_tmp + *off, count)) {
 		ret = -EFAULT;
 		goto cleanup;
@@ -144,6 +154,10 @@ static int __init custom_init(void)
 static void __exit custom_exit(void)
 {
 	pr_debug("Hello KernelCare is unloaded");
+	/*
+	 * not needed in the task
+	 * not sure it's needed at all
+	 */
 	while (mutex_is_locked(&foo_mutex))
 		continue;
 	debugfs_remove_recursive(dir);

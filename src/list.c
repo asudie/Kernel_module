@@ -62,6 +62,7 @@ void identity_destroy(int id)
 	entry = identity_find(id);
 	if (entry)
 		list_del(&entry->list);
+	/* kmalloc-ed memory leak? */
 }
 
 int identity_hire(int id)
@@ -108,6 +109,11 @@ static void __exit custom_exit(void)
 	struct list_head *ptr, *next;
 	struct identity *entry;
 
+	/*
+	 * here the list is empty, right?
+	 * due to identity_destroy(2); identity_destroy(1); in module_init-function
+	 * so nothing will be kfree-ed..
+	 */
 	list_for_each_safe(ptr, next, &identity_list.list) {
 		entry = list_entry(ptr, struct identity, list);
 		list_del(&entry->list);
