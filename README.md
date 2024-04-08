@@ -35,6 +35,8 @@ All tasks are completed on a real machine.
 
 ### Checking files with checkpatch.pl
 
+minor: missed dependencies for checkpatch
+
 ![style](https://github.com/asudie/Kernel_module/assets/80539245/4489d521-e6eb-4626-a375-2a25136eb4ad)
 
 ### Checking that jiffies works with printk

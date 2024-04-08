@@ -14,6 +14,12 @@
 #include <linux/timer.h>
 
 #define BUFFER_SIZE 11
+/*
+ * why hard-coded?
+ * why 11?
+ * please, double check ULONG_MAX in /usr/include/limits.h
+ * it is at least (!) 32 bit long
+ */
 
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
@@ -53,11 +59,26 @@ static int __init custom_init(void)
 		return -1;
 	}
 
+	/*
+	 * minor:
+	 * this case can be done even without fops using:
+	 * debugfs_create_u64(..., (u64 *)&jiffies);
+	 */
 	file1 = debugfs_create_file("jiffies", 0004, dir, NULL, &fops_j);
 
 	if (!file1) {
 		// Abort module load.
 		pr_alert("debugfs_kernelcare: failed to create /sys/kernel/debug/kernelcare/jiffies\n");
+		/*
+		 * cleanup, right?
+		 * otherwise whichever debugfs_create_dir() did will not be reverted, see
+		 * https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L581
+		 * PS: in the following version this issue is fixed - ok
+		 *
+		 * Also, such functions have a tricky return values in case of errors.
+		 * like ERR_PTR(-ERROR)
+		 */
+		debugfs_remove_recursive(dir);
 		return -1;
 	}
 

@@ -3,11 +3,7 @@
  * Copyright 2024 Aleksandra Smolniakova.
  */
 
-#include <linux/fs.h>
-#include <linux/init.h>
 #include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/uaccess.h>
 
 // Module metadata
 MODULE_AUTHOR("Aleksandra Smolniakova");
